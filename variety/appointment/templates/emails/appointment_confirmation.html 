@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Appointment Confirmation</title>
+  </head>
+  <body>
+    <h1>Hi {{ client.first_name }},</h1>
+    <p>Your appointment on {{ start_time|date:"F j, Y, g:i a" }} has been confirmed.</p>
+    <ul>
+      {% for svc in services %}
+        <li>{{ svc.name }} — {{ svc.duration }}</li>
+      {% endfor %}
+    </ul>
+    <p>Thank you for booking with us!</p>
+  </body>
+</html>

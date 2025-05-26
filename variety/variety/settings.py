@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -32,6 +33,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # 'baton',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,9 +47,15 @@ INSTALLED_APPS = [
     'phonenumber_field',         # For Django PhoneNumber
     'phonenumbers',              # For PhoneNumber
     'accounts',
+    'schedule',  # django-scheduler
+    'appointment',
+    'corsheaders',
+    'baton.autodiscover',
+
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,7 +70,7 @@ ROOT_URLCONF = 'variety.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],    # <-- include your top‑level templates/
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,7 +98,7 @@ WSGI_APPLICATION = 'variety.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'VarietyDB',
+        'NAME': 'VarietyDB1',
         'USER': 'postgres',
         'PASSWORD': 'dev.shivlab',
         'HOST': 'localhost',
@@ -142,6 +151,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
 		    'rest_framework_simplejwt.authentication.JWTAuthentication',  # For JWT Authentication	       
     ),
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ]
 }
 
 DJOSER = {
@@ -173,3 +187,99 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'sender22210@gmail.com'
 EMAIL_HOST_PASSWORD = 'ygef nqsv itgv rwnw'
 DEFAULT_FROM_EMAIL = 'sender22210@gmail.com'
+
+INSTALLED_APPS += ['django_celery_beat']
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+
+#FrontEnd
+CORS_ALLOW_HEADERS = [
+    'sessionid',
+    'content-type',
+    'x-csrftoken',
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'x-requested-with',
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.81:3000",
+    "http://localhost:3000",
+    #"http://127.0.0.1:3000/"
+]
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
+
+# settings.py
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+# settings.py
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',  # Or 'INFO', 'WARNING', 'ERROR', etc.
+            'class': 'logging.StreamHandler',
+    },
+},
+'root': {
+    'handlers': ['console'],
+    'level': 'DEBUG',  # Set the minimum level of logs to capture
+},
+}
+
+# settings.py
+
+TIME_ZONE = 'Asia/Kolkata'
+USE_TZ = True
+
+
+# BATON = {
+#     'SITE_HEADER': 'Saloon Appointment Company',
+#     'SITE_TITLE': 'Saloon Appointment Company Admin',
+#     'INDEX_TITLE': 'Admin Panel',
+#     'SUPPORT_HREF': 'https://SaloonAppointment.com/support/',
+#     'COPYRIGHT': 'copyright © 2025 My SaloonAppointment',
+#     'POWERED_BY': '<a href="https://SaloonAppointment.com">Saloon Appointment</a>',
+#     'MENU': {
+#         'items': [
+#             {'type': 'title', 'label': 'User Management'},
+#             {'type': 'app', 'name': 'auth', 'label': 'Authentication', 'icon': 'fa fa-lock'},
+#             {'type': 'app', 'name': 'accounts', 'label': 'User Accounts', 'icon': 'fa fa-user'},
+            
+#             {'type': 'title', 'label': 'Appointments'},
+#             {'type': 'app', 'name': 'appointment', 'label': 'Appointments', 'icon': 'fa fa-calendar-check'},
+#             {'type': 'app', 'name': 'schedule', 'label': 'Scheduling', 'icon': 'fa fa-calendar'},
+            
+#             {'type': 'title', 'label': 'Configuration'},
+#             {'type': 'model', 'app': 'auth', 'name': 'user', 'label': 'Users', 'icon': 'fa fa-user'},
+#             {'type': 'model', 'app': 'auth', 'name': 'group', 'label': 'Groups', 'icon': 'fa fa-users'},
+#         ]
+#     }
+# }
+# # Static files (CSS, JavaScript, Images)
+# # https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# # Extra places for collectstatic to find static files.
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]

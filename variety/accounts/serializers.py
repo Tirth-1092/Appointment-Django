@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from django.contrib.auth import get_user_model 
-from .models import User
+# from .models import User
 
 User = get_user_model()   # retrieves the project's active User model
 
@@ -26,5 +26,5 @@ class CustomRegistrationSerializer(UserCreateSerializer):
 class UserProfileSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ['id', 'username', 'email', 'phone_number']
+        fields = ['id', 'username',  'first_name', 'last_name', 'email', 'phone_number']
         read_only_fields = ['id']  # Users cannot modify these fields       

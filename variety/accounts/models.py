@@ -9,3 +9,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def is_customer(self):
+        return not self.is_staff and not self.is_superuser
+
+    @property
+    def is_employee(self):
+        return self.is_staff and not self.is_superuser
